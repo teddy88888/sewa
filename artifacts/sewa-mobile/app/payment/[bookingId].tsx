@@ -4,6 +4,10 @@ import {
   useCreatePayment,
 } from "@workspace/api-client-react";
 import * as Haptics from "expo-haptics";
+import {
+  schedulePaymentSuccessNotification,
+  scheduleReturnReminderNotification,
+} from "@/hooks/useNotifications";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import {
@@ -85,9 +89,20 @@ export default function PaymentScreen() {
 
   const { mutate: createPayment, isPending } = useCreatePayment({
     mutation: {
-      onSuccess: () => {
+      onSuccess: (data) => {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         setPaid(true);
+        if (booking) {
+          schedulePaymentSuccessNotification({
+            itemName: booking.itemName,
+            totalAmount: booking.totalAmount,
+            startDate: booking.startDate,
+          });
+          scheduleReturnReminderNotification({
+            itemName: booking.itemName,
+            endDate: booking.endDate,
+          });
+        }
       },
       onError: () => {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Error);

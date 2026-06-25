@@ -1,6 +1,7 @@
 import { Feather } from "@expo/vector-icons";
 import { useGetWallet } from "@workspace/api-client-react";
 import { useRouter } from "expo-router";
+import { useCallback, useEffect, useState } from "react";
 import {
   ActivityIndicator,
   Alert,
@@ -8,18 +9,26 @@ import {
   Pressable,
   ScrollView,
   StyleSheet,
+  Switch,
   Text,
   View,
 } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
+import {
+  getNotificationPermissionStatus,
+  requestNotificationPermission,
+  schedulePaymentSuccessNotification,
+} from "@/hooks/useNotifications";
 
 export default function ProfileScreen() {
   const colors = useColors();
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { user, signOut } = useAuth();
+  const [notifStatus, setNotifStatus] = useState<"granted" | "denied" | "undetermined">("undetermined");
+  const [notifLoading, setNotifLoading] = useState(false);
 
   const topPadding = Platform.OS === "web" ? 67 : insets.top;
   const bottomPadding = Platform.OS === "web" ? 34 + 84 : 100;
@@ -27,6 +36,40 @@ export default function ProfileScreen() {
   const { data: wallet, isLoading: walletLoading } = useGetWallet({
     enabled: !!user,
   });
+
+  useEffect(() => {
+    if (Platform.OS === "web") return;
+    getNotificationPermissionStatus().then(setNotifStatus);
+  }, []);
+
+  const handleToggleNotifications = useCallback(async () => {
+    if (notifStatus === "granted") {
+      Alert.alert(
+        "Nonaktifkan Notifikasi",
+        "Untuk menonaktifkan notifikasi, buka Pengaturan perangkat dan matikan izin notifikasi untuk aplikasi ini.",
+        [{ text: "OK" }]
+      );
+      return;
+    }
+    setNotifLoading(true);
+    const granted = await requestNotificationPermission();
+    const status = await getNotificationPermissionStatus();
+    setNotifStatus(status);
+    setNotifLoading(false);
+    if (granted) {
+      await schedulePaymentSuccessNotification({
+        itemName: "Tes notifikasi",
+        totalAmount: 0,
+        startDate: new Date().toISOString(),
+      });
+    } else {
+      Alert.alert(
+        "Izin Ditolak",
+        "Aktifkan notifikasi di Pengaturan perangkat agar kamu bisa menerima update pesanan.",
+        [{ text: "OK" }]
+      );
+    }
+  }, [notifStatus]);
 
   const handleSignOut = () => {
     Alert.alert("Keluar", "Apakah kamu yakin ingin keluar?", [
@@ -211,7 +254,6 @@ export default function ProfileScreen() {
           { icon: "plus-circle", label: "Daftarkan Item", onPress: () => router.push("/daftar-item"), highlight: true },
           { icon: "box", label: "Item Saya", onPress: () => {} },
           { icon: "heart", label: "Favorit", onPress: () => {} },
-          { icon: "bell", label: "Notifikasi", onPress: () => {} },
         ].map((item, index, arr) => (
           <View key={item.label}>
             <Pressable
@@ -260,6 +302,63 @@ export default function ProfileScreen() {
             )}
           </View>
         ))}
+
+        {/* Notification toggle row */}
+        <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
+        <Pressable
+          style={styles.menuItem}
+          onPress={handleToggleNotifications}
+          disabled={Platform.OS === "web" || notifLoading}
+        >
+          <View
+            style={[
+              styles.menuIcon,
+              {
+                backgroundColor:
+                  notifStatus === "granted"
+                    ? colors.success + "20"
+                    : colors.accent,
+              },
+            ]}
+          >
+            {notifLoading ? (
+              <ActivityIndicator size="small" color={colors.primary} />
+            ) : (
+              <Feather
+                name="bell"
+                size={16}
+                color={
+                  notifStatus === "granted"
+                    ? colors.success
+                    : colors.accentForeground
+                }
+              />
+            )}
+          </View>
+          <View style={{ flex: 1 }}>
+            <Text style={[styles.menuLabel, { color: colors.foreground }]}>
+              Notifikasi
+            </Text>
+            {Platform.OS !== "web" && (
+              <Text style={[styles.notifStatusText, { color: colors.mutedForeground }]}>
+                {notifStatus === "granted"
+                  ? "Aktif — update pesanan & pengingat"
+                  : notifStatus === "denied"
+                  ? "Dinonaktifkan di pengaturan perangkat"
+                  : "Ketuk untuk mengaktifkan"}
+              </Text>
+            )}
+          </View>
+          {Platform.OS !== "web" && (
+            <Switch
+              value={notifStatus === "granted"}
+              onValueChange={handleToggleNotifications}
+              thumbColor={notifStatus === "granted" ? colors.primaryForeground : "#f4f3f4"}
+              trackColor={{ false: colors.border, true: colors.primary }}
+              disabled={notifLoading}
+            />
+          )}
+        </Pressable>
       </View>
 
       {/* Sign Out */}
@@ -435,5 +534,9 @@ const styles = StyleSheet.create({
   linkText: {
     fontSize: 14,
     fontWeight: "500",
+  },
+  notifStatusText: {
+    fontSize: 11,
+    marginTop: 1,
   },
 });
