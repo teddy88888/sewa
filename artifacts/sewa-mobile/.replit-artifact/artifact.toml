@@ -1,0 +1,27 @@
+kind = "mobile"
+previewPath = "/mobile/"
+title = "SEWA Mobile"
+version = "1.0.0"
+id = "artifacts/sewa-mobile"
+router = "expo-domain"
+
+[[integratedSkills]]
+name = "expo"
+version = "1.0.0"
+
+[[services]]
+ensurePreviewReachable = "/status"
+name = "expo"
+paths = [ "/mobile/" ]
+localPort = 21670
+
+[services.development]
+run = "pnpm --filter @workspace/sewa-mobile run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/sewa-mobile", "run", "build" ]
+run = [ "pnpm", "--filter", "@workspace/sewa-mobile", "run", "serve" ]
+
+[services.env]
+PORT = "21670"
+BASE_PATH = "/mobile/"

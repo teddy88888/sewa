@@ -1,0 +1,278 @@
+Berikut MVP (Minimum Viable Product) untuk SEWA jika fokus awalnya adalah buku + mainan anak.
+
+Tujuan MVP:
+
+Validasi demand market
+Uji trust system (deposit + rental)
+Uji transaction flow end-to-end
+Tanpa build fitur terlalu kompleks di awal.
+1. MVP Scope (Versi 1.0)
+
+Platform:
+
+Website (WAJIB)
+Mobile App (Phase 2)
+
+Saran:
+Mulai dari website responsive dulu, lalu app.
+
+Kenapa?
+
+Lebih cepat launch
+Lebih murah
+Mudah testing market
+
+Tech stack:
+
+Frontend: Next.js
+Backend: Supabase atau Firebase
+Payment: Midtrans
+2. User Roles
+
+Hanya 3 role.
+
+Penyewa
+Login
+Cari barang
+Booking
+Bayar
+Return
+Pemilik Barang
+Login
+Upload barang
+Approve booking
+Confirm return
+Admin
+Approve listing
+Monitor transaksi
+Handle dispute
+3. Core Features MVP
+A. Homepage
+
+Menu:
+
+Home
+Kategori
+Cara Kerja
+Login
+
+Hero:
+
+Sewa Buku & Mainan Anak dengan Aman
+
+CTA:
+
+Cari Barang
+Upload Barang
+B. Login/Register
+Email
+Password
+OTP
+
+Optional:
+
+Google login via Google Account
+C. Upload Barang
+
+Form:
+
+Nama barang
+Kategori
+Foto
+Harga sewa
+Deposit
+Lokasi
+Deskripsi
+
+Kategori:
+
+Buku
+Mainan Anak
+D. Product Page
+
+Menampilkan:
+
+Foto
+Harga sewa
+Deposit
+Owner rating
+Availability
+
+Contoh:
+Lego Duplo
+Sewa: Rp25.000/hari
+Deposit: Rp200.000
+
+E. Booking
+
+Input:
+
+Tanggal sewa
+Durasi
+
+System hitung:
+
+Rental fee
+Deposit
+Total
+F. Payment
+
+Metode:
+
+Bank transfer
+E-wallet
+
+Status:
+
+Pending
+Paid
+Active
+Completed
+G. Deposit Wallet
+
+MVP sederhana.
+
+Tidak perlu e-wallet kompleks dulu.
+
+Cukup status:
+
+Held
+Refunded
+Deducted
+H. Return Confirmation
+
+Checklist:
+
+Barang aman?
+Ada kerusakan?
+Telat?
+
+Jika aman:
+Deposit refund.
+
+4. Database Structure
+users
+id
+name
+email
+phone
+role
+items
+id
+owner_id
+name
+category
+price
+deposit
+status
+bookings
+id
+renter_id
+item_id
+start_date
+end_date
+status
+payments
+id
+booking_id
+amount
+status
+5. MVP Flow
+
+Flow sederhana:
+
+Login
+Upload barang
+Listing tampil
+Penyewa booking
+Bayar
+Meet up
+Rental active
+Return
+Refund deposit
+6. Admin Dashboard
+
+Fitur minimal:
+
+Total users
+Total items
+Total booking
+Active disputes
+7. Revenue Model MVP
+
+3 sumber:
+
+Transaction Fee
+
+10%
+
+Insurance Fee
+
+2%
+
+Late Penalty
+
+5%
+
+8. Estimasi Budget MVP
+
+Jika outsource:
+
+UI/UX: 5–10 juta
+Frontend: 15–30 juta
+Backend: 20–40 juta
+Payment integration: 5–10 juta
+
+Total:
+
+Rp40–90 juta
+
+Jika pakai no-code:
+Bisa jauh lebih murah.
+
+9. Development Timeline
+
+Week 1–2:
+
+UI/UX
+
+Week 3–6:
+
+Development
+
+Week 7:
+
+Testing
+
+Week 8:
+
+Launch MVP
+10. Target Launch City
+
+Saya sarankan:
+Bandung atau Jakarta
+
+Kenapa?
+
+Banyak keluarga muda
+Digital adoption tinggi
+
+Kesimpulan MVP SEWA:
+
+Versi awal cukup punya 6 fitur utama:
+
+Login
+Upload barang
+Listing
+Booking
+Payment
+Deposit refund
+
+Itu sudah cukup untuk test market.
+
+Setelah validasi market, baru tambah:
+
+Mobile app
+AI scoring
+Wallet
+Insurance automation

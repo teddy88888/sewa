@@ -1,0 +1,14 @@
+uploads = []
+outputs = []
+
+[[generated]]
+id = "RYji5L5xUUSv7NJZcaKBK"
+uri = "file://artifacts/sewa-mobile/assets/images/icon.png"
+type = "image"
+title = "sewa app icon"
+
+[[generated]]
+id = "fvx4NES6zt0KdKBRjIS4T"
+uri = "file://artifacts/sewa-mobile/assets/images/hero-banner.png"
+type = "image"
+title = "sewa hero banner"
