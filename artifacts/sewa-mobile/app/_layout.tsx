@@ -41,6 +41,10 @@ function RootLayoutNav() {
         name="item/[id]"
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="daftar-item"
+        options={{ headerShown: false, presentation: "modal" }}
+      />
     </Stack>
   );
 }

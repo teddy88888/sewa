@@ -208,6 +208,7 @@ export default function ProfileScreen() {
       >
         {[
           { icon: "shopping-bag", label: "Pesanan Saya", onPress: () => router.push("/(tabs)/bookings") },
+          { icon: "plus-circle", label: "Daftarkan Item", onPress: () => router.push("/daftar-item"), highlight: true },
           { icon: "box", label: "Item Saya", onPress: () => {} },
           { icon: "heart", label: "Favorit", onPress: () => {} },
           { icon: "bell", label: "Notifikasi", onPress: () => {} },
@@ -223,16 +224,33 @@ export default function ProfileScreen() {
               <View
                 style={[
                   styles.menuIcon,
-                  { backgroundColor: colors.accent },
+                  {
+                    backgroundColor: (item as { highlight?: boolean }).highlight
+                      ? colors.primary + "20"
+                      : colors.accent,
+                  },
                 ]}
               >
                 <Feather
                   name={item.icon as "shopping-bag"}
                   size={16}
-                  color={colors.accentForeground}
+                  color={
+                    (item as { highlight?: boolean }).highlight
+                      ? colors.primary
+                      : colors.accentForeground
+                  }
                 />
               </View>
-              <Text style={[styles.menuLabel, { color: colors.foreground }]}>
+              <Text
+                style={[
+                  styles.menuLabel,
+                  {
+                    color: (item as { highlight?: boolean }).highlight
+                      ? colors.primary
+                      : colors.foreground,
+                  },
+                ]}
+              >
                 {item.label}
               </Text>
               <Feather name="chevron-right" size={16} color={colors.mutedForeground} />
