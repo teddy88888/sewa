@@ -6,6 +6,7 @@ import { useColors } from "@/hooks/useColors";
 interface BookingCardProps {
   booking: Booking;
   onPress?: () => void;
+  onPay?: () => void;
 }
 
 const STATUS_CONFIG: Record<
@@ -19,7 +20,7 @@ const STATUS_CONFIG: Record<
   cancelled: { label: "Dibatalkan", color: "#ef4444", bgSuffix: "20" },
 };
 
-export function BookingCard({ booking, onPress }: BookingCardProps) {
+export function BookingCard({ booking, onPress, onPay }: BookingCardProps) {
   const colors = useColors();
   const statusCfg = STATUS_CONFIG[booking.status] ?? STATUS_CONFIG["pending"];
 
@@ -41,7 +42,8 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
         styles.card,
         {
           backgroundColor: colors.card,
-          borderColor: colors.border,
+          borderColor:
+            booking.status === "pending" ? colors.warning + "60" : colors.border,
           borderRadius: colors.radius,
           opacity: pressed ? 0.9 : 1,
         },
@@ -52,10 +54,7 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
         {booking.itemImageUrl ? (
           <Image
             source={{ uri: booking.itemImageUrl }}
-            style={[
-              styles.image,
-              { borderRadius: colors.radius / 2 },
-            ]}
+            style={[styles.image, { borderRadius: colors.radius / 2 }]}
             resizeMode="cover"
           />
         ) : (
@@ -84,6 +83,9 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
               { backgroundColor: statusCfg.color + statusCfg.bgSuffix },
             ]}
           >
+            <View
+              style={[styles.statusDot, { backgroundColor: statusCfg.color }]}
+            />
             <Text style={[styles.statusText, { color: statusCfg.color }]}>
               {statusCfg.label}
             </Text>
@@ -100,18 +102,48 @@ export function BookingCard({ booking, onPress }: BookingCardProps) {
             {formatDate(booking.startDate)} → {formatDate(booking.endDate)}
           </Text>
           {booking.durationDays ? (
-            <Text style={[styles.durationBadge, { color: colors.primary, backgroundColor: colors.accent }]}>
+            <Text
+              style={[
+                styles.durationBadge,
+                { color: colors.primary, backgroundColor: colors.accent },
+              ]}
+            >
               {booking.durationDays} hari
             </Text>
           ) : null}
         </View>
-        <View style={styles.amountRow}>
-          <Text style={[styles.totalLabel, { color: colors.mutedForeground }]}>
-            Total
-          </Text>
-          <Text style={[styles.totalAmount, { color: colors.primary }]}>
-            {formatPrice(booking.totalAmount)}
-          </Text>
+
+        <View style={styles.bottomRow}>
+          <View style={styles.amountGroup}>
+            <Text style={[styles.totalLabel, { color: colors.mutedForeground }]}>
+              Total
+            </Text>
+            <Text style={[styles.totalAmount, { color: colors.primary }]}>
+              {formatPrice(booking.totalAmount)}
+            </Text>
+          </View>
+
+          {booking.status === "pending" && onPay && (
+            <Pressable
+              style={({ pressed }) => [
+                styles.payBtn,
+                {
+                  backgroundColor: colors.secondary,
+                  borderRadius: colors.radius / 2,
+                  opacity: pressed ? 0.85 : 1,
+                },
+              ]}
+              onPress={(e) => {
+                e.stopPropagation?.();
+                onPay();
+              }}
+            >
+              <Feather name="credit-card" size={13} color={colors.secondaryForeground} />
+              <Text style={[styles.payBtnText, { color: colors.secondaryForeground }]}>
+                Bayar
+              </Text>
+            </Pressable>
+          )}
         </View>
       </View>
     </Pressable>
@@ -155,9 +187,17 @@ const styles = StyleSheet.create({
   },
   statusBadge: {
     alignSelf: "flex-start",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 5,
     paddingHorizontal: 8,
     paddingVertical: 3,
     borderRadius: 6,
+  },
+  statusDot: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
   },
   statusText: {
     fontSize: 11,
@@ -167,7 +207,7 @@ const styles = StyleSheet.create({
     height: 1,
   },
   details: {
-    gap: 6,
+    gap: 8,
   },
   detailRow: {
     flexDirection: "row",
@@ -185,16 +225,30 @@ const styles = StyleSheet.create({
     paddingVertical: 2,
     borderRadius: 4,
   },
-  amountRow: {
+  bottomRow: {
     flexDirection: "row",
-    justifyContent: "space-between",
     alignItems: "center",
+    justifyContent: "space-between",
+  },
+  amountGroup: {
+    gap: 1,
   },
   totalLabel: {
-    fontSize: 12,
+    fontSize: 11,
   },
   totalAmount: {
     fontSize: 16,
+    fontWeight: "700",
+  },
+  payBtn: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 6,
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+  },
+  payBtnText: {
+    fontSize: 13,
     fontWeight: "700",
   },
 });

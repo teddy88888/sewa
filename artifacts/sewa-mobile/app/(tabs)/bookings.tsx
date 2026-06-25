@@ -138,7 +138,10 @@ export default function BookingsScreen() {
           ]}
           scrollEnabled={!!(bookings ?? []).length}
           renderItem={({ item }) => (
-            <BookingCard booking={item} />
+            <BookingCard
+              booking={item}
+              onPay={() => router.push(`/payment/${item.id}`)}
+            />
           )}
           ItemSeparatorComponent={() => <View style={{ height: 10 }} />}
           ListEmptyComponent={

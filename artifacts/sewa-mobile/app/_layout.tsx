@@ -45,6 +45,10 @@ function RootLayoutNav() {
         name="daftar-item"
         options={{ headerShown: false, presentation: "modal" }}
       />
+      <Stack.Screen
+        name="payment/[bookingId]"
+        options={{ headerShown: false, presentation: "modal" }}
+      />
     </Stack>
   );
 }
