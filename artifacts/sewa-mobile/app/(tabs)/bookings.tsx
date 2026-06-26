@@ -141,6 +141,11 @@ export default function BookingsScreen() {
             <BookingCard
               booking={item}
               onPay={() => router.push(`/payment/${item.id}`)}
+              onReview={() =>
+                router.push(
+                  `/review/${item.id}?itemName=${encodeURIComponent(item.itemName ?? "")}`
+                )
+              }
             />
           )}
           ItemSeparatorComponent={() => <View style={{ height: 10 }} />}

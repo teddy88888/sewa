@@ -22,6 +22,8 @@ tags:
     description: User management
   - name: stats
     description: Dashboard and aggregates
+  - name: reviews
+    description: Reviews and ratings
 paths:
   /healthz:
     get:
@@ -465,6 +467,59 @@ paths:
                 $ref: "#/components/schemas/Payment"
 
   # Users
+  # Reviews
+  /items/{id}/reviews:
+    get:
+      operationId: listItemReviews
+      tags: [reviews]
+      summary: List reviews for an item
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [reviews]
+                properties:
+                  reviews:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/Review"
+
+  /reviews:
+    post:
+      operationId: createReview
+      tags: [reviews]
+      summary: Create a review for a completed booking
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ReviewInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [review]
+                properties:
+                  review:
+                    $ref: "#/components/schemas/Review"
+        "400":
+          description: Bad request
+        "409":
+          description: Review already submitted
+
   /users/profile:
     get:
       operationId: getProfile
@@ -907,6 +962,43 @@ components:
           type: array
           items:
             $ref: "#/components/schemas/Item"
+
+    Review:
+      type: object
+      required: [id, bookingId, itemId, reviewerId, reviewerName, rating, createdAt]
+      properties:
+        id:
+          type: integer
+        bookingId:
+          type: integer
+        itemId:
+          type: integer
+        reviewerId:
+          type: integer
+        reviewerName:
+          type: string
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: ["string", "null"]
+        createdAt:
+          type: string
+          format: date-time
+
+    ReviewInput:
+      type: object
+      required: [bookingId, rating]
+      properties:
+        bookingId:
+          type: integer
+        rating:
+          type: integer
+          minimum: 1
+          maximum: 5
+        comment:
+          type: string
 
     CategoryStat:
       type: object

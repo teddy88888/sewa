@@ -6,6 +6,7 @@ import bookingsRouter from "./bookings";
 import paymentsRouter from "./payments";
 import usersRouter from "./users";
 import statsRouter from "./stats";
+import reviewsRouter from "./reviews";
 
 const router: IRouter = Router();
 
@@ -16,5 +17,6 @@ router.use(bookingsRouter);
 router.use(paymentsRouter);
 router.use(usersRouter);
 router.use(statsRouter);
+router.use(reviewsRouter);
 
 export default router;

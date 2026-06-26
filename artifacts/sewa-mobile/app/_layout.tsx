@@ -54,6 +54,10 @@ function RootLayoutNav() {
         name="notifications"
         options={{ headerShown: false, presentation: "modal" }}
       />
+      <Stack.Screen
+        name="review/[bookingId]"
+        options={{ headerShown: false, presentation: "modal" }}
+      />
     </Stack>
   );
 }

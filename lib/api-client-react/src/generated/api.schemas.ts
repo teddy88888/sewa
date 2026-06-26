@@ -323,6 +323,32 @@ export interface DashboardStats {
   recentlyViewed?: Item[];
 }
 
+export interface Review {
+  id: number;
+  bookingId: number;
+  itemId: number;
+  reviewerId: number;
+  reviewerName: string;
+  /**
+     * @minimum 1
+     * @maximum 5
+     */
+  rating: number;
+  /** @nullable */
+  comment?: string | null;
+  createdAt: string;
+}
+
+export interface ReviewInput {
+  bookingId: number;
+  /**
+     * @minimum 1
+     * @maximum 5
+     */
+  rating: number;
+  comment?: string;
+}
+
 export interface CategoryStat {
   category: string;
   count: number;
@@ -377,4 +403,12 @@ export const ListBookingsRole = {
   renter: 'renter',
   owner: 'owner',
 } as const;
+
+export type ListItemReviews200 = {
+  reviews: Review[];
+};
+
+export type CreateReview201 = {
+  review: Review;
+};
 

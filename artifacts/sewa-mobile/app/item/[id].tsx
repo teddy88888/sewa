@@ -2,6 +2,7 @@ import { Feather } from "@expo/vector-icons";
 import {
   useCreateBooking,
   useGetItem,
+  useListItemReviews,
   useToggleFavorite,
 } from "@workspace/api-client-react";
 import * as Haptics from "expo-haptics";
@@ -43,6 +44,8 @@ export default function ItemDetailScreen() {
   const bottomPadding = Platform.OS === "web" ? 34 : insets.bottom;
 
   const { data: item, isLoading, error } = useGetItem(Number(id));
+  const { data: reviewsData } = useListItemReviews(Number(id));
+  const reviews = reviewsData?.reviews ?? [];
 
   const { mutate: toggleFav } = useToggleFavorite();
 
@@ -323,6 +326,102 @@ export default function ItemDetailScreen() {
             </View>
           </View>
 
+          {/* Reviews */}
+          <View style={styles.reviewsSection}>
+            <View style={styles.reviewsHeader}>
+              <Text style={[styles.sectionTitle, { color: colors.foreground }]}>
+                Ulasan
+              </Text>
+              {reviews.length > 0 && (
+                <View style={styles.overallRating}>
+                  <Feather name="star" size={14} color="#f59e0b" />
+                  <Text style={[styles.overallRatingText, { color: colors.foreground }]}>
+                    {(reviews.reduce((s, r) => s + r.rating, 0) / reviews.length).toFixed(1)}
+                  </Text>
+                  <Text style={[styles.reviewCount, { color: colors.mutedForeground }]}>
+                    ({reviews.length} ulasan)
+                  </Text>
+                </View>
+              )}
+            </View>
+
+            {reviews.length === 0 ? (
+              <View
+                style={[
+                  styles.noReviews,
+                  { backgroundColor: colors.muted, borderRadius: colors.radius / 2 },
+                ]}
+              >
+                <Feather name="message-circle" size={24} color={colors.mutedForeground} />
+                <Text style={[styles.noReviewsText, { color: colors.mutedForeground }]}>
+                  Belum ada ulasan. Jadilah yang pertama!
+                </Text>
+              </View>
+            ) : (
+              <View style={styles.reviewsList}>
+                {reviews.slice(0, 3).map((review) => (
+                  <View
+                    key={review.id}
+                    style={[
+                      styles.reviewCard,
+                      {
+                        backgroundColor: colors.card,
+                        borderColor: colors.border,
+                        borderRadius: colors.radius / 2,
+                      },
+                    ]}
+                  >
+                    <View style={styles.reviewTop}>
+                      <View
+                        style={[
+                          styles.reviewAvatar,
+                          { backgroundColor: colors.primary + "30" },
+                        ]}
+                      >
+                        <Text style={[styles.reviewAvatarText, { color: colors.primary }]}>
+                          {review.reviewerName.charAt(0).toUpperCase()}
+                        </Text>
+                      </View>
+                      <View style={styles.reviewMeta}>
+                        <Text style={[styles.reviewerName, { color: colors.foreground }]}>
+                          {review.reviewerName}
+                        </Text>
+                        <View style={styles.reviewStars}>
+                          {[1, 2, 3, 4, 5].map((s) => (
+                            <Feather
+                              key={s}
+                              name="star"
+                              size={11}
+                              color="#f59e0b"
+                              style={{ opacity: s <= review.rating ? 1 : 0.25 }}
+                            />
+                          ))}
+                          <Text style={[styles.reviewDate, { color: colors.mutedForeground }]}>
+                            {new Date(review.createdAt).toLocaleDateString("id-ID", {
+                              day: "numeric",
+                              month: "short",
+                              year: "numeric",
+                            })}
+                          </Text>
+                        </View>
+                      </View>
+                    </View>
+                    {review.comment ? (
+                      <Text style={[styles.reviewComment, { color: colors.mutedForeground }]}>
+                        {review.comment}
+                      </Text>
+                    ) : null}
+                  </View>
+                ))}
+                {reviews.length > 3 && (
+                  <Text style={[styles.moreReviews, { color: colors.mutedForeground }]}>
+                    +{reviews.length - 3} ulasan lainnya
+                  </Text>
+                )}
+              </View>
+            )}
+          </View>
+
           {/* Cost Breakdown */}
           <View
             style={[
@@ -580,6 +679,87 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "600",
     marginTop: 8,
+  },
+  reviewsSection: {
+    gap: 12,
+    paddingHorizontal: 16,
+  },
+  reviewsHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+  },
+  overallRating: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+  },
+  overallRatingText: {
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  reviewCount: {
+    fontSize: 12,
+  },
+  noReviews: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 10,
+    padding: 14,
+  },
+  noReviewsText: {
+    fontSize: 13,
+    flex: 1,
+  },
+  reviewsList: {
+    gap: 10,
+  },
+  reviewCard: {
+    borderWidth: 1,
+    padding: 12,
+    gap: 8,
+  },
+  reviewTop: {
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 10,
+  },
+  reviewAvatar: {
+    width: 34,
+    height: 34,
+    borderRadius: 17,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  reviewAvatarText: {
+    fontSize: 14,
+    fontWeight: "700",
+  },
+  reviewMeta: {
+    flex: 1,
+    gap: 3,
+  },
+  reviewerName: {
+    fontSize: 13,
+    fontWeight: "600",
+  },
+  reviewStars: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 2,
+  },
+  reviewDate: {
+    fontSize: 11,
+    marginLeft: 4,
+  },
+  reviewComment: {
+    fontSize: 13,
+    lineHeight: 19,
+  },
+  moreReviews: {
+    fontSize: 12,
+    textAlign: "center",
+    paddingVertical: 4,
   },
   cta: {
     position: "absolute",

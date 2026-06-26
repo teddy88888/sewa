@@ -7,6 +7,7 @@ interface BookingCardProps {
   booking: Booking;
   onPress?: () => void;
   onPay?: () => void;
+  onReview?: () => void;
 }
 
 const STATUS_CONFIG: Record<
@@ -20,7 +21,7 @@ const STATUS_CONFIG: Record<
   cancelled: { label: "Dibatalkan", color: "#ef4444", bgSuffix: "20" },
 };
 
-export function BookingCard({ booking, onPress, onPay }: BookingCardProps) {
+export function BookingCard({ booking, onPress, onPay, onReview }: BookingCardProps) {
   const colors = useColors();
   const statusCfg = STATUS_CONFIG[booking.status] ?? STATUS_CONFIG["pending"];
 
@@ -126,7 +127,7 @@ export function BookingCard({ booking, onPress, onPay }: BookingCardProps) {
           {booking.status === "pending" && onPay && (
             <Pressable
               style={({ pressed }) => [
-                styles.payBtn,
+                styles.actionBtn,
                 {
                   backgroundColor: colors.secondary,
                   borderRadius: colors.radius / 2,
@@ -139,8 +140,31 @@ export function BookingCard({ booking, onPress, onPay }: BookingCardProps) {
               }}
             >
               <Feather name="credit-card" size={13} color={colors.secondaryForeground} />
-              <Text style={[styles.payBtnText, { color: colors.secondaryForeground }]}>
+              <Text style={[styles.actionBtnText, { color: colors.secondaryForeground }]}>
                 Bayar
+              </Text>
+            </Pressable>
+          )}
+          {booking.status === "completed" && onReview && (
+            <Pressable
+              style={({ pressed }) => [
+                styles.actionBtn,
+                {
+                  backgroundColor: "#f59e0b18",
+                  borderRadius: colors.radius / 2,
+                  borderWidth: 1,
+                  borderColor: "#f59e0b40",
+                  opacity: pressed ? 0.85 : 1,
+                },
+              ]}
+              onPress={(e) => {
+                e.stopPropagation?.();
+                onReview();
+              }}
+            >
+              <Feather name="star" size={13} color="#f59e0b" />
+              <Text style={[styles.actionBtnText, { color: "#f59e0b" }]}>
+                Ulasan
               </Text>
             </Pressable>
           )}
@@ -240,14 +264,14 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: "700",
   },
-  payBtn: {
+  actionBtn: {
     flexDirection: "row",
     alignItems: "center",
     gap: 6,
     paddingHorizontal: 16,
     paddingVertical: 9,
   },
-  payBtnText: {
+  actionBtnText: {
     fontSize: 13,
     fontWeight: "700",
   },

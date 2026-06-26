@@ -581,6 +581,62 @@ export const GetPaymentResponse = zod.object({
 
 
 /**
+ * @summary List reviews for an item
+ */
+export const ListItemReviewsParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const listItemReviewsResponseReviewsItemRatingMax = 5;
+
+
+
+export const ListItemReviewsResponse = zod.object({
+  "reviews": zod.array(zod.object({
+  "id": zod.number(),
+  "bookingId": zod.number(),
+  "itemId": zod.number(),
+  "reviewerId": zod.number(),
+  "reviewerName": zod.string(),
+  "rating": zod.number().min(1).max(listItemReviewsResponseReviewsItemRatingMax),
+  "comment": zod.string().nullish(),
+  "createdAt": zod.coerce.date()
+}))
+})
+
+
+/**
+ * @summary Create a review for a completed booking
+ */
+export const createReviewBodyRatingMax = 5;
+
+
+
+export const CreateReviewBody = zod.object({
+  "bookingId": zod.number(),
+  "rating": zod.number().min(1).max(createReviewBodyRatingMax),
+  "comment": zod.string().optional()
+})
+
+export const createReviewResponseReviewRatingMax = 5;
+
+
+
+export const CreateReviewResponse = zod.object({
+  "review": zod.object({
+  "id": zod.number(),
+  "bookingId": zod.number(),
+  "itemId": zod.number(),
+  "reviewerId": zod.number(),
+  "reviewerName": zod.string(),
+  "rating": zod.number().min(1).max(createReviewResponseReviewRatingMax),
+  "comment": zod.string().nullish(),
+  "createdAt": zod.coerce.date()
+})
+})
+
+
+/**
  * @summary Get user profile
  */
 export const GetProfileResponse = zod.object({
