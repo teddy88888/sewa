@@ -20,6 +20,7 @@ import { CategoryFilter } from "@/components/CategoryFilter";
 import { ItemCard } from "@/components/ItemCard";
 import { useColors } from "@/hooks/useColors";
 import { useAuth } from "@/context/AuthContext";
+import { useNotificationInbox } from "@/context/NotificationContext";
 import { useState } from "react";
 
 type Category = "all" | "buku" | "mainan";
@@ -29,6 +30,7 @@ export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { user } = useAuth();
+  const { unreadCount } = useNotificationInbox();
   const [category, setCategory] = useState<Category>("all");
 
   const topPadding =
@@ -67,31 +69,48 @@ export default function HomeScreen() {
             Sewa Buku & Mainan Anak
           </Text>
         </View>
-        {user ? (
+        <View style={styles.headerRight}>
+          {/* Bell icon with unread badge */}
           <Pressable
-            style={[
-              styles.avatarBtn,
-              { backgroundColor: colors.primary },
+            style={({ pressed }) => [
+              styles.bellBtn,
+              { backgroundColor: colors.muted, borderRadius: 22, opacity: pressed ? 0.75 : 1 },
             ]}
-            onPress={() => router.push("/(tabs)/profile")}
+            onPress={() => router.push("/notifications")}
           >
-            <Text style={[styles.avatarInitial, { color: colors.primaryForeground }]}>
-              {user.name.charAt(0).toUpperCase()}
-            </Text>
+            <Feather name="bell" size={20} color={colors.foreground} />
+            {unreadCount > 0 && (
+              <View style={[styles.badge, { backgroundColor: colors.secondary }]}>
+                <Text style={[styles.badgeText, { color: colors.secondaryForeground }]}>
+                  {unreadCount > 9 ? "9+" : unreadCount}
+                </Text>
+              </View>
+            )}
           </Pressable>
-        ) : (
-          <Pressable
-            style={[
-              styles.loginBtn,
-              { backgroundColor: colors.primary, borderRadius: colors.radius / 2 },
-            ]}
-            onPress={() => router.push("/login")}
-          >
-            <Text style={[styles.loginBtnText, { color: colors.primaryForeground }]}>
-              Masuk
-            </Text>
-          </Pressable>
-        )}
+
+          {user ? (
+            <Pressable
+              style={[styles.avatarBtn, { backgroundColor: colors.primary }]}
+              onPress={() => router.push("/(tabs)/profile")}
+            >
+              <Text style={[styles.avatarInitial, { color: colors.primaryForeground }]}>
+                {user.name.charAt(0).toUpperCase()}
+              </Text>
+            </Pressable>
+          ) : (
+            <Pressable
+              style={[
+                styles.loginBtn,
+                { backgroundColor: colors.primary, borderRadius: colors.radius / 2 },
+              ]}
+              onPress={() => router.push("/login")}
+            >
+              <Text style={[styles.loginBtnText, { color: colors.primaryForeground }]}>
+                Masuk
+              </Text>
+            </Pressable>
+          )}
+        </View>
       </View>
 
       {/* Search Bar */}
@@ -215,6 +234,34 @@ const styles = StyleSheet.create({
   loginBtnText: {
     fontSize: 13,
     fontWeight: "600",
+  },
+  headerRight: {
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 8,
+  },
+  bellBtn: {
+    width: 40,
+    height: 40,
+    alignItems: "center",
+    justifyContent: "center",
+    position: "relative",
+  },
+  badge: {
+    position: "absolute",
+    top: 2,
+    right: 2,
+    minWidth: 16,
+    height: 16,
+    borderRadius: 8,
+    alignItems: "center",
+    justifyContent: "center",
+    paddingHorizontal: 3,
+  },
+  badgeText: {
+    fontSize: 9,
+    fontWeight: "800",
+    lineHeight: 14,
   },
   searchBar: {
     flexDirection: "row",

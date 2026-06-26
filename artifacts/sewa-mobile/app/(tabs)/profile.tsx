@@ -307,8 +307,7 @@ export default function ProfileScreen() {
         <View style={[styles.menuDivider, { backgroundColor: colors.border }]} />
         <Pressable
           style={styles.menuItem}
-          onPress={handleToggleNotifications}
-          disabled={Platform.OS === "web" || notifLoading}
+          onPress={() => router.push("/notifications")}
         >
           <View
             style={[

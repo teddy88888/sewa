@@ -8,6 +8,7 @@ import {
   schedulePaymentSuccessNotification,
   scheduleReturnReminderNotification,
 } from "@/hooks/useNotifications";
+import { useNotificationInbox } from "@/context/NotificationContext";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import {
@@ -81,6 +82,7 @@ export default function PaymentScreen() {
   const { bookingId } = useLocalSearchParams<{ bookingId: string }>();
   const [selected, setSelected] = useState<PaymentMethod | null>(null);
   const [paid, setPaid] = useState(false);
+  const { addNotification } = useNotificationInbox();
 
   const topPadding = Platform.OS === "web" ? 67 : insets.top;
   const bottomPadding = Platform.OS === "web" ? 34 : insets.bottom;
@@ -89,10 +91,19 @@ export default function PaymentScreen() {
 
   const { mutate: createPayment, isPending } = useCreatePayment({
     mutation: {
-      onSuccess: (data) => {
+      onSuccess: () => {
         Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         setPaid(true);
         if (booking) {
+          const formattedAmount = `Rp${booking.totalAmount.toLocaleString("id-ID")}`;
+          const formattedDate = new Date(booking.startDate).toLocaleDateString("id-ID", {
+            day: "numeric", month: "long",
+          });
+          addNotification({
+            type: "payment_success",
+            title: "Pembayaran Berhasil! 🎉",
+            body: `${booking.itemName} siap disewa mulai ${formattedDate}. Total: ${formattedAmount}`,
+          });
           schedulePaymentSuccessNotification({
             itemName: booking.itemName,
             totalAmount: booking.totalAmount,
