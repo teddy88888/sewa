@@ -5,3 +5,4 @@ export * from "./payments";
 export * from "./favorites";
 export * from "./wallet_transactions";
 export * from "./reviews";
+export * from "./messages";

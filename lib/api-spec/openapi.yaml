@@ -520,6 +520,98 @@ paths:
         "409":
           description: Review already submitted
 
+  # Chat / Messages
+  /bookings/{id}/messages:
+    get:
+      operationId: listMessages
+      tags: [messages]
+      summary: List messages for a booking
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [messages, unreadCount]
+                properties:
+                  messages:
+                    type: array
+                    items:
+                      $ref: "#/components/schemas/ChatMessage"
+                  unreadCount:
+                    type: integer
+
+    post:
+      operationId: sendMessage
+      tags: [messages]
+      summary: Send a message in a booking chat
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/MessageInput"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ChatMessage"
+
+  /bookings/{id}/messages/read:
+    post:
+      operationId: markMessagesRead
+      tags: [messages]
+      summary: Mark all messages in a booking as read
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [updated]
+                properties:
+                  updated:
+                    type: integer
+
+  /messages/unread:
+    get:
+      operationId: getUnreadCount
+      tags: [messages]
+      summary: Get total unread message count across all bookings
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [total]
+                properties:
+                  total:
+                    type: integer
+
   /users/profile:
     get:
       operationId: getProfile
