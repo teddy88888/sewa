@@ -251,8 +251,8 @@ export default function ProfileScreen() {
       >
         {[
           { icon: "shopping-bag", label: "Pesanan Saya", onPress: () => router.push("/(tabs)/bookings") },
-          { icon: "plus-circle", label: "Daftarkan Item", onPress: () => router.push("/daftar-item"), highlight: true },
-          { icon: "box", label: "Item Saya", onPress: () => {} },
+          { icon: "bar-chart-2", label: "Dashboard Pemilik", onPress: () => router.push("/dashboard" as any), highlight: true },
+          { icon: "plus-circle", label: "Daftarkan Item", onPress: () => router.push("/daftar-item") },
           { icon: "heart", label: "Favorit", onPress: () => {} },
         ].map((item, index, arr) => (
           <View key={item.label}>

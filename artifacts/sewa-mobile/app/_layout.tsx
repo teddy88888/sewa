@@ -58,6 +58,10 @@ function RootLayoutNav() {
         name="review/[bookingId]"
         options={{ headerShown: false, presentation: "modal" }}
       />
+      <Stack.Screen
+        name="dashboard"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 }
