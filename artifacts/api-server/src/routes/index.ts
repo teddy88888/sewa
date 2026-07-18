@@ -7,6 +7,7 @@ import paymentsRouter from "./payments";
 import usersRouter from "./users";
 import statsRouter from "./stats";
 import reviewsRouter from "./reviews";
+import messagesRouter from "./messages";
 
 const router: IRouter = Router();
 
@@ -18,5 +19,6 @@ router.use(paymentsRouter);
 router.use(usersRouter);
 router.use(statsRouter);
 router.use(reviewsRouter);
+router.use(messagesRouter);
 
 export default router;

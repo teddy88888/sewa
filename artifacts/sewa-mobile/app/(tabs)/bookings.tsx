@@ -146,6 +146,11 @@ export default function BookingsScreen() {
                   `/review/${item.id}?itemName=${encodeURIComponent(item.itemName ?? "")}`
                 )
               }
+              onChat={() =>
+                router.push(
+                  `/chat/${item.id}?itemName=${encodeURIComponent(item.itemName ?? "")}&otherName=${encodeURIComponent(item.ownerName ?? "Pemilik")}` as any
+                )
+              }
             />
           )}
           ItemSeparatorComponent={() => <View style={{ height: 10 }} />}

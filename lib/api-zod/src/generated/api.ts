@@ -637,6 +637,75 @@ export const CreateReviewResponse = zod.object({
 
 
 /**
+ * @summary List messages for a booking
+ */
+export const ListMessagesParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const ListMessagesResponse = zod.object({
+  "messages": zod.array(zod.object({
+  "id": zod.number(),
+  "bookingId": zod.number(),
+  "senderId": zod.number(),
+  "senderName": zod.string(),
+  "receiverId": zod.number(),
+  "content": zod.string(),
+  "isRead": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})),
+  "unreadCount": zod.number()
+})
+
+
+/**
+ * @summary Send a message in a booking chat
+ */
+export const SendMessageParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const sendMessageBodyContentMax = 1000;
+
+
+
+export const SendMessageBody = zod.object({
+  "content": zod.string().min(1).max(sendMessageBodyContentMax)
+})
+
+export const SendMessageResponse = zod.object({
+  "id": zod.number(),
+  "bookingId": zod.number(),
+  "senderId": zod.number(),
+  "senderName": zod.string(),
+  "receiverId": zod.number(),
+  "content": zod.string(),
+  "isRead": zod.boolean(),
+  "createdAt": zod.coerce.date()
+})
+
+
+/**
+ * @summary Mark all messages in a booking as read
+ */
+export const MarkMessagesReadParams = zod.object({
+  "id": zod.coerce.number()
+})
+
+export const MarkMessagesReadResponse = zod.object({
+  "updated": zod.number()
+})
+
+
+/**
+ * @summary Get total unread message count across all bookings
+ */
+export const GetUnreadCountResponse = zod.object({
+  "total": zod.number()
+})
+
+
+/**
  * @summary Get user profile
  */
 export const GetProfileResponse = zod.object({

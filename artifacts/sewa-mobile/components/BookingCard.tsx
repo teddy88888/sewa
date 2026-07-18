@@ -8,6 +8,7 @@ interface BookingCardProps {
   onPress?: () => void;
   onPay?: () => void;
   onReview?: () => void;
+  onChat?: () => void;
 }
 
 const STATUS_CONFIG: Record<
@@ -21,7 +22,7 @@ const STATUS_CONFIG: Record<
   cancelled: { label: "Dibatalkan", color: "#ef4444", bgSuffix: "20" },
 };
 
-export function BookingCard({ booking, onPress, onPay, onReview }: BookingCardProps) {
+export function BookingCard({ booking, onPress, onPay, onReview, onChat }: BookingCardProps) {
   const colors = useColors();
   const statusCfg = STATUS_CONFIG[booking.status] ?? STATUS_CONFIG["pending"];
 
@@ -165,6 +166,27 @@ export function BookingCard({ booking, onPress, onPay, onReview }: BookingCardPr
               <Feather name="star" size={13} color="#f59e0b" />
               <Text style={[styles.actionBtnText, { color: "#f59e0b" }]}>
                 Ulasan
+              </Text>
+            </Pressable>
+          )}
+          {(booking.status === "pending" || booking.status === "paid" || booking.status === "active") && onChat && (
+            <Pressable
+              style={({ pressed }) => [
+                styles.actionBtn,
+                {
+                  backgroundColor: colors.accent,
+                  borderRadius: colors.radius / 2,
+                  opacity: pressed ? 0.85 : 1,
+                },
+              ]}
+              onPress={(e) => {
+                e.stopPropagation?.();
+                onChat();
+              }}
+            >
+              <Feather name="message-circle" size={13} color={colors.accentForeground} />
+              <Text style={[styles.actionBtnText, { color: colors.accentForeground }]}>
+                Chat
               </Text>
             </Pressable>
           )}

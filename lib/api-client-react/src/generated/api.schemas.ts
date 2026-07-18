@@ -355,6 +355,25 @@ export interface CategoryStat {
   availableCount?: number;
 }
 
+export interface ChatMessage {
+  id: number;
+  bookingId: number;
+  senderId: number;
+  senderName: string;
+  receiverId: number;
+  content: string;
+  isRead: boolean;
+  createdAt: string;
+}
+
+export interface MessageInput {
+  /**
+     * @minLength 1
+     * @maxLength 1000
+     */
+  content: string;
+}
+
 export type ListItemsParams = {
 category?: ListItemsCategory;
 search?: string;
@@ -410,5 +429,18 @@ export type ListItemReviews200 = {
 
 export type CreateReview201 = {
   review: Review;
+};
+
+export type ListMessages200 = {
+  messages: ChatMessage[];
+  unreadCount: number;
+};
+
+export type MarkMessagesRead200 = {
+  updated: number;
+};
+
+export type GetUnreadCount200 = {
+  total: number;
 };
 

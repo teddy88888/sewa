@@ -1102,3 +1102,34 @@ components:
           type: integer
         availableCount:
           type: integer
+
+    ChatMessage:
+      type: object
+      required: [id, bookingId, senderId, senderName, receiverId, content, isRead, createdAt]
+      properties:
+        id:
+          type: integer
+        bookingId:
+          type: integer
+        senderId:
+          type: integer
+        senderName:
+          type: string
+        receiverId:
+          type: integer
+        content:
+          type: string
+        isRead:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+
+    MessageInput:
+      type: object
+      required: [content]
+      properties:
+        content:
+          type: string
+          minLength: 1
+          maxLength: 1000

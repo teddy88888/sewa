@@ -62,6 +62,10 @@ function RootLayoutNav() {
         name="dashboard"
         options={{ headerShown: false }}
       />
+      <Stack.Screen
+        name="chat/[bookingId]"
+        options={{ headerShown: false }}
+      />
     </Stack>
   );
 }
