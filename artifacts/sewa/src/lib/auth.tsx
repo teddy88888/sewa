@@ -1,5 +1,5 @@
 import { createContext, useContext, useEffect, useState, ReactNode } from "react";
-import { setAuthTokenGetter } from "@workspace/api-client-react/src/custom-fetch";
+import { setAuthTokenGetter } from "@workspace/api-client-react";
 import { useGetMe, User } from "@workspace/api-client-react";
 
 interface AuthContextType {
