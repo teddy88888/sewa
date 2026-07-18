@@ -12,6 +12,7 @@ import LoginPage from "@/pages/login";
 import RegisterPage from "@/pages/register";
 import BookingsPage from "@/pages/bookings";
 import WalletPage from "@/pages/wallet";
+import ProfilePage from "@/pages/profile";
 
 const queryClient = new QueryClient();
 
@@ -25,6 +26,7 @@ function Router() {
       <Route path="/register" component={RegisterPage} />
       <Route path="/bookings" component={BookingsPage} />
       <Route path="/wallet" component={WalletPage} />
+      <Route path="/profile" component={ProfilePage} />
       <Route component={NotFound} />
     </Switch>
   );
