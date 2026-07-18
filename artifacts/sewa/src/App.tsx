@@ -10,6 +10,7 @@ import BrowsePage from "@/pages/browse";
 import ItemPage from "@/pages/item";
 import LoginPage from "@/pages/login";
 import RegisterPage from "@/pages/register";
+import BookingsPage from "@/pages/bookings";
 
 const queryClient = new QueryClient();
 
@@ -21,6 +22,7 @@ function Router() {
       <Route path="/items/:id" component={ItemPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/register" component={RegisterPage} />
+      <Route path="/bookings" component={BookingsPage} />
       <Route component={NotFound} />
     </Switch>
   );
