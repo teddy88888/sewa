@@ -13,6 +13,7 @@ import RegisterPage from "@/pages/register";
 import BookingsPage from "@/pages/bookings";
 import WalletPage from "@/pages/wallet";
 import ProfilePage from "@/pages/profile";
+import UploadPage from "@/pages/upload";
 
 const queryClient = new QueryClient();
 
@@ -27,6 +28,7 @@ function Router() {
       <Route path="/bookings" component={BookingsPage} />
       <Route path="/wallet" component={WalletPage} />
       <Route path="/profile" component={ProfilePage} />
+      <Route path="/upload" component={UploadPage} />
       <Route component={NotFound} />
     </Switch>
   );
