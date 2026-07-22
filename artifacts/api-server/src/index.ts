@@ -1,8 +1,11 @@
+import type { IncomingMessage, ServerResponse } from "http";
 import app from "./app";
 import { logger } from "./lib/logger";
 
-// Export the Express app as default for Vercel Serverless Functions
-export default app;
+// Vercel serverless handler — Express 5 apps are callable directly (req, res) => void
+export default function handler(req: IncomingMessage, res: ServerResponse) {
+  return app(req, res);
+}
 
 // Start the HTTP server when not running on Vercel (e.g. local dev, Docker)
 if (!process.env.VERCEL) {
