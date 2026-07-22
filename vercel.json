@@ -3,5 +3,6 @@
   "buildCommand": "pnpm install && pnpm --filter @workspace/api-server run build",
   "installCommand": null,
   "devCommand": null,
-  "framework": null
+  "framework": null,
+  "rewrites": [{ "source": "/(.*)", "destination": "/api/index.mjs" }]
 }
