@@ -1,4 +1,4 @@
-import express, { type Express } from "express";
+import express, { type Express, type Request, type Response } from "express";
 import cors from "cors";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -33,8 +33,19 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/api", router);
 
-// ===== Production: Serve frontend static files =====
-if (process.env.NODE_ENV === "production") {
+// Root handler
+app.get("/", (_req: Request, res: Response) => {
+  res.json({
+    name: "Sewa API",
+    version: "0.0.0",
+    endpoints: {
+      health: "/api/healthz",
+    },
+  });
+});
+
+// ===== Local production only: Serve frontend static files =====
+if (process.env.NODE_ENV === "production" && !process.env.VERCEL) {
   const __dirname = path.dirname(fileURLToPath(import.meta.url));
   const publicPath = path.resolve(__dirname, "../../dist/public");
 
@@ -43,12 +54,17 @@ if (process.env.NODE_ENV === "production") {
   app.use(express.static(publicPath));
 
   // SPA fallback: semua non-API routes → index.html
-  app.get("*", (req, res) => {
+  app.get("*", (req: Request, res: Response) => {
     if (req.path.startsWith("/api")) {
       return res.status(404).json({ error: "API route not found" });
     }
     return res.sendFile(path.join(publicPath, "index.html"));
   });
 }
+
+// 404 fallback for unmatched routes
+app.use((_req: Request, res: Response) => {
+  res.status(404).json({ error: "Not found" });
+});
 
 export default app;
