@@ -5,6 +5,7 @@
 import express from "express";
 import path from "path";
 import { fileURLToPath } from "url";
+import type { Request, Response, NextFunction } from "express";
 
 export function serveStaticFrontend() {
   if (process.env.NODE_ENV !== "production") {
@@ -21,7 +22,7 @@ export function serveStaticFrontend() {
   express.static(publicPath);
 
   // Fallback ke index.html untuk SPA routing
-  return (req, res, next) => {
+  return (req: Request, res: Response, next: NextFunction) => {
     // Hanya handle non-API routes
     if (req.path.startsWith("/api")) {
       return next();
