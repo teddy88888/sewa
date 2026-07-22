@@ -6,7 +6,7 @@
   "devCommand": null,
   "framework": null,
   "functions": {
-    "api/index.js": {
+    "api/index.cjs": {
       "runtime": "@vercel/node@5"
     }
   },

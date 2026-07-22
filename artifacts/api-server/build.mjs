@@ -118,13 +118,16 @@ globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
     outExtension: { ".js": ".mjs" },
   });
 
-  // Build for Vercel serverless (api/ at project root — auto-detected by Vercel)
-  // Note: Vercel auto-detects serverless functions by scanning for *.js (not .mjs) in api/
+// Build for Vercel serverless (api/ at project root)
+  // Uses src/vercel.ts — a minimal handler with no pino-http to avoid worker issues in serverless.
+  // Output .cjs (CommonJS) for @vercel/node runtime reliability.
   await esbuild({
     ...sharedOpts,
-    entryPoints: [path.resolve(artifactDir, "src/index.ts")],
+    entryPoints: [path.resolve(artifactDir, "src/vercel.ts")],
     outdir: vercelApiDir,
-    outExtension: { ".js": ".js" },
+    format: "cjs",
+    outExtension: { ".js": ".cjs" },
+    banner: undefined,
   });
 }
 

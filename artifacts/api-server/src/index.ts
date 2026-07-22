@@ -2,9 +2,26 @@ import type { IncomingMessage, ServerResponse } from "http";
 import app from "./app";
 import { logger } from "./lib/logger";
 
-// Vercel serverless handler — Express 5 apps are callable directly (req, res) => void
-export default function handler(req: IncomingMessage, res: ServerResponse) {
-  return app(req, res);
+/**
+ * Vercel serverless handler
+ * Wraps Express 5 app into an async handler. Express 5 app(req, res) returns void,
+ * so we wrap it in a promise to ensure Vercel waits for the response to complete.
+ */
+export default async function handler(
+  req: IncomingMessage,
+  res: ServerResponse,
+) {
+  await new Promise<void>((resolve, reject) => {
+    res.on("finish", () => resolve());
+    res.on("close", () => resolve());
+    res.on("error", (err) => reject(err));
+
+    try {
+      app(req, res);
+    } catch (err) {
+      reject(err);
+    }
+  });
 }
 
 // Start the HTTP server when not running on Vercel (e.g. local dev, Docker)
