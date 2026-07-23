@@ -5,7 +5,6 @@ import { build as esbuild } from "esbuild";
 import esbuildPluginPino from "esbuild-plugin-pino";
 import { rm } from "node:fs/promises";
 
-// Plugins (e.g. 'esbuild-plugin-pino') may use `require` to resolve dependencies
 globalThis.require = createRequire(import.meta.url);
 
 const artifactDir = path.dirname(fileURLToPath(import.meta.url));
@@ -118,14 +117,12 @@ globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
     outExtension: { ".js": ".mjs" },
   });
 
-  // Build for Vercel serverless (api/index.cjs)
-  // Uses src/vercel.ts — minimal handler, no pino-http to avoid worker issues.
+  // Build for Vercel serverless (api/vercel.cjs — matches entry filename)
+  // Uses src/vercel.ts — minimal handler without pino-http to avoid worker issues.
   await esbuild({
     ...sharedOpts,
     entryPoints: [path.resolve(artifactDir, "src/vercel.ts")],
     outdir: vercelApiDir,
-    outbase: path.resolve(artifactDir, "src"),
-    entryNames: "index",
     format: "cjs",
     outExtension: { ".js": ".cjs" },
     banner: undefined,
