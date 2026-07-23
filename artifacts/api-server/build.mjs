@@ -118,13 +118,14 @@ globalThis.__dirname = __bannerPath.dirname(globalThis.__filename);
     outExtension: { ".js": ".mjs" },
   });
 
-// Build for Vercel serverless (api/ at project root)
-  // Uses src/vercel.ts — a minimal handler with no pino-http to avoid worker issues in serverless.
-  // Output .cjs (CommonJS) for @vercel/node runtime reliability.
+  // Build for Vercel serverless (api/index.cjs)
+  // Uses src/vercel.ts — minimal handler, no pino-http to avoid worker issues.
   await esbuild({
     ...sharedOpts,
     entryPoints: [path.resolve(artifactDir, "src/vercel.ts")],
     outdir: vercelApiDir,
+    outbase: path.resolve(artifactDir, "src"),
+    entryNames: "index",
     format: "cjs",
     outExtension: { ".js": ".cjs" },
     banner: undefined,
